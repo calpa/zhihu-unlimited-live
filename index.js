@@ -23,7 +23,7 @@ const fetchZhihu = async (url, offset = 0, limit = 20, tag_id) => {
                 tag_id
             },
             headers: {
-                cookie,
+                // cookie,
                 "user-agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36"
             }});
         return data;
@@ -40,30 +40,20 @@ const saveToDB = (data) => {
 }
 
 const main = async (url, offset = 0, tag) => {
+    let result;
     try {
         const data = await fetchZhihu(url, offset);
-        let isEnd = false;
-        // 1020 is received from inspection
-        if (offset >= 1020) {
-            isEnd = true;
-        }
-
-        if (isEnd) {
-            console.log('Finished url: ' + url + ', offset: ' + offset + ', tag: ' + tag);
-        } else {
-            console.log('Successuflly fetcded url: ' + url + ', offset: ' + offset + ', tag: ' + tag);
-            if (data.data) {
-                data.data.forEach(live => {
-                    const result = handleLive(live.item);
-
-                    saveToDB(result);
-                });
-            }
-            main(url, offset + 20, tag);
+        console.log('Successuflly fetcded url: ' + url + ', offset: ' + offset + ', tag: ' + tag);
+        if (data.data) {
+            const temp = data.data.map(live => {
+                return handleLive(live.item);
+            });
+            result = temp;
         }
     } catch (err) {
         console.error(err);
     }
+    return result;
 };
 
 const askCookie = async () => {
@@ -83,14 +73,16 @@ const getCachedCookie = async () => {
 }
 
 const init = async () => {
-    cookie = await getCachedCookie();
-
-    if (cookie === "") {
-        cookie = await askCookie();
+    const baseurl = 'https://api.zhihu.com/unlimited/subscriptions/1/resources';
+    const offset = 1020;
+    let result = [];
+    for (var i = 0; i < offset; i += 20) {
+        const lives = await main(baseurl, i); // Receive recommend lives
+        result = [...result, ...lives];
     }
 
-    const baseurl = 'https://api.zhihu.com/unlimited/subscriptions/1/resources';
-    await main(baseurl, 0); // Receive recommend lives
+    console.log(result.length);
+    // saveToDB(result);
 }
 
 init();
