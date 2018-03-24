@@ -82,7 +82,9 @@ const init = async () => {
     }
 
     console.log(result.length);
-    // saveToDB(result);
+    result.forEach(item => {
+        saveToDB(item);
+    });
 }
 
 init();

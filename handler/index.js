@@ -22,7 +22,13 @@ const handleLive = (data) => {
         participants = data.seats.taken;
     }
 
-    const { id, starts_at, subject } = data;
+    const { id, starts_at, subject, speaker } = data;
+
+    const speakerTemp = {
+        speaker_id: speaker.member.id,
+        speaker_url: speaker.member.url_token,
+        speaker: speaker.member.name
+    }
 
     return {
         fee,
@@ -30,7 +36,8 @@ const handleLive = (data) => {
         participants,
         id,
         starts_at,
-        subject
+        subject,
+        ...speakerTemp
     }
 }
 
