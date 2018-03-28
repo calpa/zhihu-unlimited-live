@@ -75,13 +75,16 @@ const getCachedCookie = async () => {
 const init = async () => {
     const baseurl = 'https://api.zhihu.com/unlimited/subscriptions/1/resources';
     const offset = 1020;
+    let total = 0;
     let result = [];
     for (var i = 0; i < offset; i += 20) {
         const lives = await main(baseurl, i); // Receive recommend lives
+        const len = lives.length;
+        total += len;
+        console.log(total, len);
         result = [...result, ...lives];
     }
 
-    console.log(result.length);
     result.forEach(item => {
         saveToDB(item);
     });
