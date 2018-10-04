@@ -1,5 +1,7 @@
 ## Zhihu Unlimited Live
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/calpa/zhihu-unlimited-live.svg)](https://greenkeeper.io/)
+
 透过简单的 nodejs 脚本来获取知乎无限 live 数据，给前端项目 [zhihu-unlimited-web](https://github.com/calpa/zhihu-unlimited-web) 使用。
 
 ## 安装
